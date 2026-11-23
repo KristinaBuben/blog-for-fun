@@ -3,4 +3,5 @@ export const ERROR_MESSAGES = {
   INVALID_DATA: 'Invalid registration data',
   INVALID_CREDENTIALS: 'Invalid email or password',
   UNAUTHORIZED: 'Unauthorized',
+  NEW_PASSWORD_MUST_BE_DIFFERENT: 'New password must be different',
 };
