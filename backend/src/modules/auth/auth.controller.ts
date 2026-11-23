@@ -3,6 +3,7 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -25,6 +26,7 @@ import { API_OPERATION_DESCRIPTIONS } from '../common/constants/api-operation-de
 import { TokensDto } from './dto/response/tokens.dto.js';
 import { LoginDto } from './dto/request/login.dto.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
+import { ChangePasswordDto } from './dto/request/change-password.dto.js';
 
 export interface AuthenticatedRequest extends Request {
   user: {
@@ -91,5 +93,29 @@ export class AuthController {
   })
   async logout(@Req() req: AuthenticatedRequest): Promise<void> {
     await this.authService.logout(req.user.sub);
+  }
+
+  @Patch('change-password')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: API_OPERATION_DESCRIPTIONS.CHANGE_PASSWORD_SUMMARY,
+    description: API_OPERATION_DESCRIPTIONS.CHANGE_PASSWORD_DESCRIPTION,
+  })
+  @ApiOkResponse({
+    description: API_OPERATION_DESCRIPTIONS.PASSWORD_CHANGED,
+  })
+  @ApiBadRequestResponse({
+    description: ERROR_MESSAGES.NEW_PASSWORD_MUST_BE_DIFFERENT,
+  })
+  @ApiUnauthorizedResponse({
+    description: ERROR_MESSAGES.INVALID_CREDENTIALS,
+  })
+  async changePassword(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: ChangePasswordDto,
+  ): Promise<void> {
+    await this.authService.changePassword(req.user.sub, dto);
   }
 }
