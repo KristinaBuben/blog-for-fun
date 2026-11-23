@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Environment variables
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Build output
+dist/
+build/
+.next/
+out/
+**/generated/prisma/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Tests
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+
+# IDEs and editors
+.idea/
+.vscode/*
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Misc
+*.pem
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
