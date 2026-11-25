@@ -1,5 +1,9 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { RegisterDto } from './dto/request/register.dto.js';
 import { TokensDto } from './dto/response/tokens.dto.js';
 import { EmailAlreadyExistException } from './exceptions/email-already-exist.exception.js';
@@ -7,6 +11,8 @@ import { TokenService } from './token.service.js';
 import { UserService } from '../user/user.service.js';
 import { LoginDto } from './dto/request/login.dto.js';
 import { ERROR_MESSAGES } from '../common/constants/error-messages.constants.js';
+import { ChangePasswordDto } from './dto/request/change-password.dto.js';
+import { DeleteAccountDto } from './dto/request/delete-account.dto.js';
 
 @Injectable()
 export class AuthService {
@@ -71,5 +77,48 @@ export class AuthService {
     await this.userService.update(userId, {
       hashedRefreshToken: null,
     });
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const user = await this.userService.findById(userId);
+
+    if (!user) throw new UnauthorizedException(ERROR_MESSAGES.UNAUTHORIZED);
+
+    const isPasswordValid = await bcrypt.compare(
+      dto.currentPassword,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException(ERROR_MESSAGES.INVALID_CREDENTIALS);
+    }
+
+    const isSamePassword = await bcrypt.compare(dto.newPassword, user.password);
+
+    if (isSamePassword) {
+      throw new BadRequestException(
+        ERROR_MESSAGES.NEW_PASSWORD_MUST_BE_DIFFERENT,
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(dto.newPassword, 10);
+
+    await this.userService.update(userId, {
+      password: hashedPassword,
+      hashedRefreshToken: null,
+    });
+  }
+
+  async deletePassword(userId: string, dto: DeleteAccountDto) {
+    const user = await this.userService.findById(userId);
+
+    if (!user) throw new UnauthorizedException(ERROR_MESSAGES.UNAUTHORIZED);
+
+    const isPasswordValid = await bcrypt.compare(user.password, dto.password);
+
+    if (isPasswordValid)
+      throw new UnauthorizedException(ERROR_MESSAGES.INVALID_CREDENTIALS);
+
+    await this.userService.delete(userId);
   }
 }

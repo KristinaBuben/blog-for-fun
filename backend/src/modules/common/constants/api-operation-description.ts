@@ -8,4 +8,11 @@ export const API_OPERATION_DESCRIPTIONS = {
   LOGOUT_USER_SUMMARY: 'User logout',
   LOGOUT_USER_DESCRIPTION: 'Revokes the current refresh token',
   LOGGED_OUT_USER: 'User successfully logged out',
+  CHANGE_PASSWORD_SUMMARY: 'Change user password',
+  CHANGE_PASSWORD_DESCRIPTION: 'Changes the password of the authenticated user',
+  PASSWORD_CHANGED: 'Password successfully changed',
+  DELETE_ACCOUNT_SUMMARY: 'Delete user',
+  DELETE_ACCOUNT_DESCRIPTION:
+    'Permanently deletes the authenticated user account',
+  ACCOUNT_DELETED: 'Account successfully deleted',
 };
