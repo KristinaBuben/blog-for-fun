@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpCode,
   HttpStatus,
   Patch,
@@ -13,6 +14,7 @@ import {
   ApiBearerAuth,
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -27,6 +29,7 @@ import { TokensDto } from './dto/response/tokens.dto.js';
 import { LoginDto } from './dto/request/login.dto.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 import { ChangePasswordDto } from './dto/request/change-password.dto.js';
+import { DeleteAccountDto } from './dto/request/delete-account.dto.js';
 
 export interface AuthenticatedRequest extends Request {
   user: {
@@ -117,5 +120,26 @@ export class AuthController {
     @Body() dto: ChangePasswordDto,
   ): Promise<void> {
     await this.authService.changePassword(req.user.sub, dto);
+  }
+
+  @Delete('me')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOperation({
+    summary: API_OPERATION_DESCRIPTIONS.DELETE_ACCOUNT_SUMMARY,
+    description: API_OPERATION_DESCRIPTIONS.DELETE_ACCOUNT_DESCRIPTION,
+  })
+  @ApiNoContentResponse({
+    description: API_OPERATION_DESCRIPTIONS.ACCOUNT_DELETED,
+  })
+  @ApiUnauthorizedResponse({
+    description: ERROR_MESSAGES.INVALID_PASSWORD,
+  })
+  async DeleteAccountDto(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: DeleteAccountDto,
+  ): Promise<void> {
+    await this.authService.deletePassword(req.user.sub, dto);
   }
 }

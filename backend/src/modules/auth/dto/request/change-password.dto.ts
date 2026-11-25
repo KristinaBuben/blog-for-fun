@@ -16,7 +16,7 @@ export class ChangePasswordDto {
   currentPassword: string;
 
   @ApiProperty({
-    example: 'Zaq1@###Xsw2!',
+    example: 'Zaq1@5555Xsw2!',
     description: 'User new password (8-25 characters)',
   })
   @IsNotEmpty()

@@ -21,7 +21,6 @@ import { UserModule } from './modules/user/user.module.js';
     LoggerModule.forRoot(pinoConfig()),
     PrismaModule,
     AuthModule,
-    UserModule,
   ],
   providers: [
     PrismaService,
